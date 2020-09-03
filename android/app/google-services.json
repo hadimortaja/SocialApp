@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "567439515771",
+    "firebase_url": "https://social-e2626.firebaseio.com",
+    "project_id": "social-e2626",
+    "storage_bucket": "social-e2626.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567439515771:android:f9d15ca94e9288611c42de",
+        "android_client_info": {
+          "package_name": "com.h.mortaja.social"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567439515771-4k4nvinqu3g05p8uak98ju0snlhj2pgb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.h.mortaja.social",
+            "certificate_hash": "42235f88a479dd5a26236a28b50be609505248be"
+          }
+        },
+        {
+          "client_id": "567439515771-5th3d412ssg9blben64lkc684idah6d8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa0nJHxY_x80Kr_nyHtC_LRAVCccKA3_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "567439515771-5th3d412ssg9blben64lkc684idah6d8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
