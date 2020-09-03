@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData
         (
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Colors.white,
         dialogBackgroundColor: Colors.black,
         primarySwatch: Colors.grey,
         cardColor: Colors.white70,

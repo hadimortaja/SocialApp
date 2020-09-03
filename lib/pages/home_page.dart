@@ -120,13 +120,14 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text("HadisGram",style: TextStyle(fontSize: 92,color: Colors.white,fontFamily: "Signatra"),),
+            Text("HadisGram",style: TextStyle(fontSize: 92,color: Colors.black,fontFamily: "Signatra"),),
             InkWell(
               onTap: ()=>_login(),
               child: Container(
                 width: 270,
                 height: 65,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
                         image: AssetImage("assets/images/google_signin_button.png"),
                         fit: BoxFit.cover
@@ -144,7 +145,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          TimeLinePage(),
+//          TimeLinePage(),
+               RaisedButton.icon(onPressed: ()=>_logout(),
+      icon: Icon(Icons.close),
+      label: Text("Sign Out"),
+    ),
           SearchPage(),
           UploadPage(),
           NotificationsPage(),
@@ -158,8 +163,8 @@ class _HomePageState extends State<HomePage> {
         currentIndex: getPageIndex,
         onTap: onTapChangePage,
         backgroundColor: Theme.of(context).accentColor,
-        activeColor: Colors.white,
-        inactiveColor: Colors.blueGrey,
+        activeColor: Colors.blue,
+        inactiveColor: Colors.white,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home)),
           BottomNavigationBarItem(icon: Icon(Icons.search)),
@@ -169,10 +174,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-//    return RaisedButton.icon(onPressed: ()=>_logout(),
-//      icon: Icon(Icons.close),
-//      label: Text("Sign Out"),
-//    );
+
   }
   whenPageChanges(int pageIndex){
     setState(() {

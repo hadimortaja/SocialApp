@@ -8,7 +8,7 @@ AppBar header(context,{bool isAppTitle=false ,String strTitle,disappearedBackBut
     automaticallyImplyLeading: disappearedBackButton ? false :true,
     title: Text(
       isAppTitle ? "HadisGram": strTitle,
-      style: TextStyle(color: Colors.white,
+      style: TextStyle(color: Colors.black,
       fontFamily:  isAppTitle ? "Signatra": "",
         fontSize: isAppTitle ? 45 : 22,
 
@@ -16,6 +16,6 @@ AppBar header(context,{bool isAppTitle=false ,String strTitle,disappearedBackBut
       overflow: TextOverflow.ellipsis,
     ),
     centerTitle: true ,
-    backgroundColor: Theme.of(context).accentColor,
+    backgroundColor: Colors.white,
   );
 }

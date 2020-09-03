@@ -18,7 +18,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     if(form.validate()){
        form.save();
        SnackBar snackBar =SnackBar(
-         content: Text("Welcome"+username),
+         content: Text("Welcome "+username),
        );
        _scaffoldKey.currentState.showSnackBar(snackBar);
        Timer(Duration(seconds: 4),(){
