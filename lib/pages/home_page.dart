@@ -115,22 +115,28 @@ class _HomePageState extends State<HomePage> {
   Scaffold buildSignInScreen() {
     return Scaffold(
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/pic.jpg",),
+            fit: BoxFit.cover
+          )
+        ),
         alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text("HadisGram",style: TextStyle(fontSize: 92,color: Colors.black,fontFamily: "Signatra"),),
+            Padding(padding: EdgeInsets.only(top: 200),child: Text("HadisGram",style: TextStyle(fontSize: 92,color: Colors.white,fontFamily: "Signatra"),)),
             InkWell(
               onTap: ()=>_login(),
               child: Container(
-                width: 270,
+                margin: EdgeInsets.only(top: 150),
+                width: 250,
                 height: 65,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(50),
                     image: DecorationImage(
                         image: AssetImage("assets/images/google_signin_button.png"),
-                        fit: BoxFit.cover
+                        fit: BoxFit.fill,
                     )
                 ),
               ),
@@ -162,9 +168,9 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: CupertinoTabBar(
         currentIndex: getPageIndex,
         onTap: onTapChangePage,
-        backgroundColor: Theme.of(context).accentColor,
-        activeColor: Colors.blue,
-        inactiveColor: Colors.white,
+        backgroundColor:Colors.white,
+        activeColor: Colors.blueAccent,
+        inactiveColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home)),
           BottomNavigationBarItem(icon: Icon(Icons.search)),

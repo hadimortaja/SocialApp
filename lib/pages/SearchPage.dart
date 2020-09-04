@@ -17,9 +17,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   AppBar searchPageHeader(){
     return AppBar(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       title: TextFormField(
-        style: TextStyle(fontSize: 18,color: Colors.white),
+        style: TextStyle(fontSize: 18,color: Colors.black),
         controller: searchTextEditingController,
         decoration: InputDecoration(
           hintText: "Search here...",
@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           borderSide: BorderSide(color: Colors.white),
         ),
             filled: true,
-          prefixIcon: Icon(Icons.person_pin,color: Colors.grey,size: 30,),
+          prefixIcon: Icon(Icons.person_pin,color: Colors.blueAccent,size: 30,),
           suffixIcon: IconButton(icon: Icon(Icons.clear,color: Colors.grey ,),onPressed: emptyTheTextFormField,)
       ),
         onFieldSubmitted: controlSearching,
@@ -55,9 +55,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
-            Icon(Icons.group,color: Colors.grey,size: 100,),
+            Icon(Icons.group,color: Colors.blueAccent,size: 50,),
             Text("Search Users",textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 20),),
+              style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 15),),
           ],
         ),
       ),

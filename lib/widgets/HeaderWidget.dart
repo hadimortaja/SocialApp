@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 AppBar header(context,{bool isAppTitle=false ,String strTitle,disappearedBackButton =false}) {
   return AppBar(
+    elevation: 5,
     iconTheme: IconThemeData(
       color: Colors.white
     ),
