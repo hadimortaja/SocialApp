@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,8 +11,11 @@ import 'package:social/pages/SearchPage.dart';
 import 'package:social/pages/TimeLinePage.dart';
 import 'package:social/pages/UploadPage.dart';
 
-final GoogleSignIn _googleSignIn =GoogleSignIn();
+final GoogleSignIn gSignIn =GoogleSignIn();
 final userReference =Firestore.instance.collection("users");
+final StorageReference storageReference =FirebaseStorage.instance.ref().child("Posts Pictures");
+final postReference =Firestore.instance.collection("post");
+
 
 final DateTime timestamp =DateTime.now();
 
@@ -31,13 +35,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     pageController =PageController();
-    _googleSignIn.onCurrentUserChanged.listen((gSigninAccount) {
+    gSignIn.onCurrentUserChanged.listen((gSigninAccount) {
       controlSignIn(gSigninAccount);
     },onError: (gError){
       print("Error Message : "+gError);
     });
     try {
-      _googleSignIn.signInSilently(suppressErrors: false).then((
+      gSignIn.signInSilently(suppressErrors: false).then((
           gSignInAccount) {
         controlSignIn(gSignInAccount);
       }).catchError((gError) {
@@ -62,7 +66,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   saveUserInfoToFireStore()async{
-    final GoogleSignInAccount gCurrentUser =_googleSignIn.currentUser;
+      final GoogleSignInAccount gCurrentUser =gSignIn.currentUser;
     DocumentSnapshot documentSnapshot =await userReference.document(gCurrentUser.id).get();
 
     if(!documentSnapshot.exists){
@@ -92,13 +96,13 @@ class _HomePageState extends State<HomePage> {
 
   _login()async{
     try {
-      await _googleSignIn.signIn();
+      await gSignIn.signIn();
     } catch (error) {
       print(error);
     }
   }
-  _logout(){
-    _googleSignIn.signOut();
+  logOutUser() async {
+    gSignIn.signOut();
 
   }
 
@@ -151,15 +155,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-//          TimeLinePage(),
-               RaisedButton.icon(onPressed: ()=>_logout(),
-      icon: Icon(Icons.close),
-      label: Text("Sign Out"),
-    ),
+          TimeLinePage(),
           SearchPage(),
-          UploadPage(),
+          UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
-          ProfilePage(),
+          ProfilePage(userProfileId:currentUser.id),//////
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,
@@ -188,7 +188,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
   onTapChangePage(int pageIndex){
-    pageController.animateToPage(pageIndex, duration: Duration(milliseconds: 400), curve: Curves.bounceInOut);
+    pageController.animateToPage(pageIndex, duration: Duration(milliseconds: 400), curve: Curves.fastOutSlowIn);
 
   }
 

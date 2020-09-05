@@ -1,18 +1,38 @@
 import 'dart:io';
-//import 'dart:async';
+import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:social/models/user.dart';
+import 'package:social/pages/home_page.dart';
+import 'package:social/widgets/ProgressWidget.dart';
+import 'package:uuid/uuid.dart';
+import 'package:image/image.dart'as ImD;
 
 class UploadPage extends StatefulWidget {
+  final User gCurrentUser;
+
+  UploadPage({this.gCurrentUser});
+
   @override
   _UploadPageState createState() => _UploadPageState();
 }
 
-class _UploadPageState extends State<UploadPage> {
+class _UploadPageState extends State<UploadPage>with AutomaticKeepAliveClientMixin<UploadPage> {
   File file;
+  bool uploading =false;
+  String postId =Uuid().v4();
+  TextEditingController descriptionTextEditingController =TextEditingController();
+  TextEditingController locationTextEditingController =TextEditingController();
+
+
+  bool get wantKeepAlive=>true;
   @override
   Widget build(BuildContext context) {
-    return displayUploadScreen();
+    return file == null ?displayUploadScreen():displayUploadFormScreen();
   }
   displayUploadScreen(){
     return Container(
@@ -52,7 +72,7 @@ return showDialog(
           ),
           SimpleDialogOption(
             child: Text("Cancel",style: TextStyle(color: Colors.black),),
-            onPressed: ()=>Navigator.pop(context),
+            onPressed: ()=>Navigator.of(context).pop(),
           )
         ],
       );
@@ -60,25 +80,183 @@ return showDialog(
 );
   }
   captureImageWithCamera()async{
+try {
+  Navigator.of(context).pop();
+  File imageFile = await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 680,
+      maxWidth: 970
+  );
+  setState(() {
+    this.file = imageFile;
+  });
+}catch(e){
 
-Navigator.pop(context);
-File imageFile  =await ImagePicker.pickImage(
-    source: ImageSource.camera,
-  maxHeight: 680,
-  maxWidth: 970
-);
-setState(() {
-this.file =imageFile;
-});
-
+}
   }
   pickImageFromGallery()async{
-    Navigator.pop(context);
-    File imageFile  =await ImagePicker.pickImage(
+    try {
+      Navigator.of(context).pop();
+      File imageFile = await ImagePicker.pickImage(
         source: ImageSource.gallery,
+      );
+      setState(() {
+        this.file = imageFile;
+      });
+    }catch(e){
+
+    }
+  }
+  displayUploadFormScreen(){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton(icon: Icon(Icons.arrow_back,color: Colors.black,),
+        onPressed: clearPostInfo,),
+        title: Text("New Post",style: TextStyle(
+          fontSize: 20,color: Colors.black,fontWeight: FontWeight.bold
+        ),),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: uploading ? null : ()=>controlUploadAndSave(),
+            child: Text("Share",style: TextStyle(color: Colors.blueAccent,fontWeight: FontWeight.bold,fontSize: 16),),
+          )
+        ],
+      ),
+      body: ListView(
+          children: <Widget>[
+            uploading ? linearProgress() :Text(""),
+            Container(
+              height: 230,
+              width: MediaQuery.of(context).size.width *0.8,
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 16/9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: FileImage(file),fit: BoxFit.cover)
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 12),),
+            ListTile(
+              leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(widget.gCurrentUser.url),),
+              title: Container(
+                width: 250,
+                child: TextField(
+                  style: TextStyle(color: Colors.black),
+                  controller: descriptionTextEditingController,
+                  decoration: InputDecoration(
+                    hintText: "Say Something About Image..",
+//                  hintStyle:
+                  border: InputBorder.none
+                  ),
+                ),
+              ),
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.person_pin_circle,color: Colors.black,size: 36,),
+              title: Container(
+                width: 250,
+                child: TextField(
+                  style: TextStyle(color: Colors.black),
+                  controller: locationTextEditingController,
+                  decoration: InputDecoration(
+                      hintText: "Write the location here..",
+//                  hintStyle:
+                      border: InputBorder.none
+                  ),
+                ),
+              ),
+            ),
+Container(
+  width: 220,
+  height: 110,
+  alignment: Alignment.center,
+  child: RaisedButton.icon(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35 )),
+    color: Colors.blueAccent ,
+    icon: Icon(Icons.location_on,color: Colors.white,),
+    label: Text("Get My Current Location",style: TextStyle(color: Colors.white),),
+    onPressed: getUserCurrentLocation,
+
+  ),
+)
+          ],
+        ),
     );
+  }
+  clearPostInfo(){
+    locationTextEditingController.clear();
+    descriptionTextEditingController.clear();
     setState(() {
-      this.file =imageFile;
+      file =null;
+    });
+  }
+  getUserCurrentLocation()async{
+    Position position =await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark>placeMarks =await Geolocator().placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark mplaceMark =placeMarks[0];
+    String completeAddressInfo ='${mplaceMark.subThoroughfare} ${mplaceMark.thoroughfare}, ${mplaceMark.subLocality} ${mplaceMark.locality}, '
+        '${mplaceMark.subAdministrativeArea} ${mplaceMark.administrativeArea}, ${mplaceMark.postalCode} ${mplaceMark.country},';
+    String specificAddress ='${mplaceMark.postalCode}, ${mplaceMark.country}';
+    locationTextEditingController.text =specificAddress;
+  }
+
+  controlUploadAndSave() async {
+    setState(() {
+      uploading = true;
+    });
+    await compressingPhoto();
+
+    String downloadUrl =await uploadPhoto(file);
+
+    savePostInfoToFireStore(url:downloadUrl,location:locationTextEditingController.text,
+        description:descriptionTextEditingController.text);
+    locationTextEditingController.clear();
+    descriptionTextEditingController.clear();
+    setState(() {
+      file =null;
+      uploading =false;
+      postId =Uuid().v4();
+    });
+  }
+
+  compressingPhoto() async {
+    final tDirectory = await getTemporaryDirectory();
+    final path = tDirectory.path;
+    ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
+    final compressedImageFile = File('$path/img_$postId.jpg')
+      ..writeAsBytesSync(ImD.encodeJpg(mImageFile, quality: 90));
+    setState(() {
+      file = compressedImageFile;
+    });
+  }
+
+  Future<String> uploadPhoto(mImageFile) async {
+    StorageUploadTask mStorageUploadTask =
+        storageReference.child("post_$postId.jpg").putFile(mImageFile);
+    StorageTaskSnapshot storageTaskSnapshot = await mStorageUploadTask.onComplete;
+    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  savePostInfoToFireStore({String url, String location, String description}) {
+    postReference.document(widget.gCurrentUser.id).collection("usersPosts").document(postId).setData({
+      "postId":postId,
+      "ownerId":widget.gCurrentUser.id,
+      "timestamp":timestamp,
+      "likes":{},
+      "username":widget.gCurrentUser.username,
+      "description":description,
+      "location":location,
+      "url":url,
+
     });
   }
 }
