@@ -4,7 +4,7 @@ AppBar header(context,{bool isAppTitle=false ,String strTitle,disappearedBackBut
   return AppBar(
     elevation: 5,
     iconTheme: IconThemeData(
-      color: Colors.white
+      color: Colors.black
     ),
     automaticallyImplyLeading: disappearedBackButton ? false :true,
     title: Text(

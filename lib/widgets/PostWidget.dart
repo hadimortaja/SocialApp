@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/user.dart';
+import 'package:social/pages/CommentsPage.dart';
 import 'package:social/pages/home_page.dart';
 import 'package:social/widgets/CImageWidget.dart';
 import 'package:social/widgets/ProgressWidget.dart';
@@ -160,7 +161,7 @@ onDoubleTap: ()=>controlUserLikePost,
             Padding(
                 padding: EdgeInsets.only(right: 20,)),
             GestureDetector(
-              onTap:()=>print("show comments"),
+              onTap:()=>displayComments(context,postId:postId,ownerId:ownerId,url:url),
               child: Icon(Icons.chat_bubble_outline,size: 25,color: Colors.grey,),
             ),
           ],
@@ -243,5 +244,9 @@ activityFeedReference.document(ownerId).collection("feedItems").document(postId)
 
       });
     }
+  }
+  displayComments(BuildContext context,{String postId,String ownerId,String url}){
+Navigator.of(context).push(MaterialPageRoute(builder:
+    (BuildContext context)=>CommentsPage(postId:postId,postOwnerId:ownerId,postImageUrl:url)));
   }
 }
