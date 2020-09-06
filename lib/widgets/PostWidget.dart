@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,6 +87,7 @@ class _PostState extends State<Post> {
   });
   @override
   Widget build(BuildContext context) {
+    isLiked =(likes[currentOnlineUserId]==true);
     return Padding(
       padding: EdgeInsets.only(bottom: 12),
       child: Column(
@@ -127,11 +130,12 @@ class _PostState extends State<Post> {
   }
   createPostPicture(){
     return GestureDetector(
-onDoubleTap: ()=>print("Post Liked"),
+onDoubleTap: ()=>controlUserLikePost,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
           Image.network(url),
+          showHeart ? Icon(Icons.favorite,size: 160,color: Colors.pink,):Text(""),
         ],
       ),
     );
@@ -145,12 +149,12 @@ onDoubleTap: ()=>print("Post Liked"),
             Padding(
               padding: EdgeInsets.only(top: 40,left: 20)),
             GestureDetector(
-              onTap:()=>print("Liked Post"),
+              onTap:()=>controlUserLikePost(),
               child: Icon(
-                Icons.favorite,color: Colors.grey,
-//                isLiked ? Icons.favorite:Icons.favorite_border,
-//                size: 28,
-//                color: Colors.red,
+//                Icons.favorite,color: Colors.grey,
+                isLiked ? Icons.favorite:Icons.favorite_border,
+                size: 28,
+                color: Colors.pink,
               ),
             ),
             Padding(
@@ -183,5 +187,61 @@ onDoubleTap: ()=>print("Post Liked"),
         )
       ],
     );
+  }
+  controlUserLikePost(){
+    bool _liked =likes[currentOnlineUserId]==true;
+    if(_liked){
+      postReference.document(ownerId).collection("usersPosts")
+          .document(postId).updateData({"likes.$currentOnlineUserId":false});
+      removeLike();
+      setState(() {
+        likeCount=likeCount-1;
+        isLiked = false;
+        likes[currentOnlineUserId]=false;
+      });
+    }else if(!_liked){
+      postReference.document(ownerId).collection("usersPosts")
+          .document(postId).updateData({"likes.$currentOnlineUserId":true});
+      addLike();
+
+      setState(() {
+        likeCount=likeCount+1;
+        isLiked =true;
+        likes[currentOnlineUserId]=true;
+        showHeart =true;
+      });
+      Timer(Duration(milliseconds: 800),(){
+        setState(() {
+          showHeart=false;
+        });
+      });
+    }
+  }
+  removeLike(){
+    bool isNotPostOwner =currentOnlineUserId !=ownerId;
+    if(isNotPostOwner){
+activityFeedReference.document(ownerId).collection("feedItems").document(postId).get().then((document){
+  if(document.exists){
+    document.reference.delete();
+  }
+
+});
+    }
+  }
+  addLike(){
+    bool isNotPostOwner =currentOnlineUserId != ownerId;
+
+    if(isNotPostOwner){
+      activityFeedReference.document(ownerId).collection("feedItems").document(postId).setData({
+        "type": "like",
+        "username":currentUser.username,
+        "userId":currentUser.id,
+        "timestamp":timestamp,
+        "url":url,
+        "postId":postId,
+        "userProfileImg":currentUser.url,
+
+      });
+    }
   }
 }
