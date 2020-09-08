@@ -250,7 +250,7 @@ Container(
     postReference.document(widget.gCurrentUser.id).collection("usersPosts").document(postId).setData({
       "postId":postId,
       "ownerId":widget.gCurrentUser.id,
-      "timestamp":timestamp,
+      "timestamp":DateTime.now(),
       "likes":{},
       "username":widget.gCurrentUser.username,
       "description":description,

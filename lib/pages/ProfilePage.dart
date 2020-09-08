@@ -69,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: header(context, strTitle: "Profile"),
+        appBar: header(context, strTitle: "Profile",disappearedBackButton: true),///////////
         body: ListView(
           children: <Widget>[
             createProfileTopView(),

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/user.dart';
 import 'package:social/pages/CommentsPage.dart';
+import 'package:social/pages/ProfilePage.dart';
 import 'package:social/pages/home_page.dart';
 import 'package:social/widgets/CImageWidget.dart';
 import 'package:social/widgets/ProgressWidget.dart';
@@ -113,7 +114,7 @@ class _PostState extends State<Post> {
         return ListTile(
           leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(user.url),backgroundColor: Colors.grey,),
           title: GestureDetector(
-            onTap: ()=>print("Show Profile"),
+            onTap: ()=>displayUserProfile(context,userProfileId: user.id),
             child: Text(user.username,
             style: TextStyle(
               color: Colors.black,
@@ -237,7 +238,7 @@ activityFeedReference.document(ownerId).collection("feedItems").document(postId)
         "type": "like",
         "username":currentUser.username,
         "userId":currentUser.id,
-        "timestamp":timestamp,
+        "timestamp":DateTime.now(),
         "url":url,
         "postId":postId,
         "userProfileImg":currentUser.url,
@@ -249,4 +250,7 @@ activityFeedReference.document(ownerId).collection("feedItems").document(postId)
 Navigator.of(context).push(MaterialPageRoute(builder:
     (BuildContext context)=>CommentsPage(postId:postId,postOwnerId:ownerId,postImageUrl:url)));
   }
+}
+displayUserProfile(BuildContext context,{String userProfileId}){
+  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProfilePage(userProfileId: userProfileId,)));
 }
