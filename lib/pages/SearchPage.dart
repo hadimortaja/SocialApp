@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/user.dart';
+import 'package:social/pages/ProfilePage.dart';
 import 'package:social/pages/home_page.dart';
 import 'package:social/widgets/ProgressWidget.dart';
 
@@ -105,7 +106,7 @@ class UserResult extends StatelessWidget {
         child: Column(
           children: <Widget>[
             GestureDetector(
-              onTap: ()=>print("tapped"),
+              onTap: ()=>displayUserProfile(context,userProfileId:eachUser.id),
               child:  ListTile(
                 leading: CircleAvatar(backgroundColor: Colors.black,backgroundImage: CachedNetworkImageProvider(eachUser.url),),
                 title: Text(eachUser.profileName,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
@@ -117,6 +118,8 @@ class UserResult extends StatelessWidget {
       ),
     );
   }
-
+displayUserProfile(BuildContext context,{String userProfileId}){
+Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProfilePage(userProfileId: userProfileId,)));
+}
 }
 

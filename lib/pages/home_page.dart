@@ -17,6 +17,8 @@ final StorageReference storageReference =FirebaseStorage.instance.ref().child("P
 final postReference =Firestore.instance.collection("post");
 final activityFeedReference =Firestore.instance.collection("feed");
 final commentsReference =Firestore.instance.collection("comments");
+final followersReference =Firestore.instance.collection("followers");
+  final followingReference =Firestore.instance.collection("following");
 
 
 final DateTime timestamp =DateTime.now();

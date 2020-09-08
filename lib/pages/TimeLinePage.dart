@@ -11,7 +11,7 @@ class _TimeLinePageState extends State<TimeLinePage> {
   @override
   Widget build(context) {
     return Scaffold(
-      appBar: header(context ,isAppTitle: true),
+      appBar: header(context ,isAppTitle: true,disappearedBackButton: true),
       body: circularProgress(),
     );
   }
